@@ -144,7 +144,15 @@ The simplest option in this case is to replace the select input with a standard 
 
 An alternative, but more complex option would be to replace the input with an autocomplete widget, that only loads and renders a subset of the available options as needed. If you need to do this you'll need to do some work to build a custom autocomplete HTML template yourself.
 
-There are [a variety of packages for autocomplete widgets][autocomplete-packages], such as [django-autocomplete-light][django-autocomplete-light], that you may want to refer to. Note that you will not be able to simply include these components as standard widgets, but will need to write the HTML template explicitly. This is because REST framework 3.0 no longer supports the `widget` keyword argument since it now uses templated HTML generation.
+There are [a variety of packages for autocomplete widgets][autocomplete-packages], such as [django-select2](https://github.com/applegrew/django-select2), that you may want to refer to. Note that you will not be able to simply include these components as standard widgets, but will need to write the HTML template explicitly. This is because REST framework 3.0 no longer supports the `widget` keyword argument since it now uses templated HTML generation. Example with [django-autocomplete-light][django-autocomplete-light]:
+
+    class PostViewSet(viewsets.ModelViewSet):
+        filter_class = PostFilter
+        filter_backends = (filters.OrderingFilter, DjangoFilterBackend,)
+
+    class PostFilter(FilterSet):
+        poster = django_filters.ModelMultipleChoiceFilter(queryset=Poster.objects.all(), widget=autocomplete.ModelSelect2Multiple(url='posts:poster_autocomplete'))
+
 
 ---
 
